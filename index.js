@@ -92,7 +92,15 @@ const resolvers = {
     }
   },
   Photo: {
-    url: parent => `http://yoursite.com/img/${parent.id}.jpg`
+    url: parent => `http://yoursite.com/img/${parent.id}.jpg`,
+    postedBy: parent => {
+      return users.find(u => u.githubLogin === parent.githubLogin);
+    }
+  },
+  User: {
+    postedPhotos: parent => {
+      return photos.filter(p => p.githubLogin === parent.githubLogin);
+    }
   }
 };
 // 2. 서버 인스턴스를 새로 만든다.
