@@ -15,6 +15,13 @@ const typeDefs = `
       name: String!
       description: String
       category: PhotoCategory!
+      postedBy: User!
+    }
+    type User {
+      githubLogin: ID!
+      name: String
+      avatar: String
+      postedPhotos: [Photo!]!
     }
     input PostPhotoInput {
       name: String!
@@ -31,7 +38,43 @@ const typeDefs = `
 `;
 
 let _id = 0;
-let photos = [];
+// let photos = [];
+let users = [
+  {
+    githubLogin: "mHattrup",
+    name: "Mike Hattrup"
+  },
+  {
+    githubLogin: "gPlake",
+    name: "Glen Plake"
+  },
+  {
+    githubLogin: "sSchmidt",
+    name: "Scot Schmidt"
+  }
+];
+let photos = [
+  {
+    id: "1",
+    name: "Dropping the Heart Chute",
+    description: "The heart chute is one of my favorite chutes",
+    category: "ACTION",
+    githubLogin: "gPlake"
+  },
+  {
+    id: "2",
+    name: "Enjoying the sunshine",
+    category: "SELFIE",
+    githubLogin: "sSchmidt"
+  },
+  {
+    id: "3",
+    name: "Gunbarrel 25",
+    description: "25 laps on gunbarrel today",
+    category: "LANDSCAPE",
+    githubLogin: "sSchmidt"
+  }
+];
 
 const resolvers = {
   Query: {
