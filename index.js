@@ -16,12 +16,14 @@ const typeDefs = `
       description: String
       category: PhotoCategory!
       postedBy: User!
+      taggedUsers: [User!]!
     }
     type User {
       githubLogin: ID!
       name: String
       avatar: String
       postedPhotos: [Photo!]!
+      inPhotos: [Photo!]!
     }
     input PostPhotoInput {
       name: String!
@@ -75,6 +77,12 @@ let photos = [
     githubLogin: "sSchmidt"
   }
 ];
+let tags = [
+  { photoID: "1", userID: "gPlake" },
+  { photoID: "2", userID: "sSchmidt" },
+  { photoID: "2", userID: "mHattrup" },
+  { photoID: "2", userID: "gPlake" }
+];
 
 const resolvers = {
   Query: {
@@ -95,12 +103,22 @@ const resolvers = {
     url: parent => `http://yoursite.com/img/${parent.id}.jpg`,
     postedBy: parent => {
       return users.find(u => u.githubLogin === parent.githubLogin);
-    }
+    },
+    taggedUsers: parent =>
+      tags
+        .filter(tag => tag.photoID === parent.id)
+        .map(tag => tag.userID)
+        .map(userID => users.find(u => u.githubLogin === userID))
   },
   User: {
     postedPhotos: parent => {
       return photos.filter(p => p.githubLogin === parent.githubLogin);
-    }
+    },
+    inPhotos: parent =>
+      tags
+        .filter(tag => tag.userID === parent.id)
+        .map(tag => tag.photoID)
+        .map(photoID => photos.find(p => p.id === photoID))
   }
 };
 // 2. 서버 인스턴스를 새로 만든다.
