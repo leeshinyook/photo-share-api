@@ -1,4 +1,3 @@
-// 1. 'apolloServer 불러오기.
 const { ApolloServer } = require("apollo-server-express");
 const express = require("express");
 const { GraphQLScalarType } = require("graphql");
@@ -7,10 +6,8 @@ const expressPlayground = require("graphql-playground-middleware-express")
 const { readFileSync } = require("fs");
 const typeDefs = readFileSync("./typeDef.graphql", "UTF-8");
 const resolvers = require("./resolvers");
-// import resolvers from "./resolvers/resolvers.js";
-
-// 2. express()를 호출하여 익스프레스 애플리케이션을 만든다.
-var app = express();
+const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
 let users = [
   {
@@ -58,19 +55,27 @@ let tags = [
   { photoID: "2", userID: "gPlake" }
 ];
 
-const server = new ApolloServer({ typeDefs, resolvers });
+async function start() {
+  const app = express();
+  const MONGO_DB = process.env.DB_HOST;
+  const client = await MongoClient.connect(MONGO_DB, { useNewUrlParser: true });
+  const db = clinet.db();
+  const context = { db };
+  const server = new ApolloServer({ typeDefs, resolvers, context });
 
-// 3. applyMiddleware()를 호출하여 미들웨어가 같은 경로에 마운트되도록 합니다.
-server.applyMiddleware({ app });
+  // 3. applyMiddleware()를 호출하여 미들웨어가 같은 경로에 마운트되도록 합니다.
+  server.applyMiddleware({ app });
 
-// 4. 홈 라우트를 만든다.
-app.get("/", (req, res) => {
-  res.send("PhotoShare API에 오신 것을 환영합니다.");
-});
+  // 4. 홈 라우트를 만든다.
+  app.get("/", (req, res) => {
+    res.send("PhotoShare API에 오신 것을 환영합니다.");
+  });
 
-app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
-app.listen({ port: 4000 }, () => {
-  console.log(
-    `GraphQl Server running @ http://localhost:4000${server.graphqlPath}`
-  );
-});
+  app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
+  app.listen({ port: 4000 }, () => {
+    console.log(
+      `GraphQl Server running @ http://localhost:4000${server.graphqlPath}`
+    );
+  });
+}
+start();
