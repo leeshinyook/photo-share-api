@@ -9,7 +9,8 @@ GraphQL을 이용한 photo-share-api
 -----
     Learning GraphQL by Eve Porcello and Alex Banks(O'Reilly).
     Copyright 2018 MoonHighway, LLC, 978-1-492-03071-3
-    *코드의 포스팅이 있을 경우 상단의 출처의 표기를 저자가 요청*
+    
+    코드의 포스팅이 있을 경우 상단의 출처의 표기를 저자가 요청
 
 
 위 책을 공부하면서 정리한 내용을 담았습니다.
